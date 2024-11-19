@@ -1,4 +1,5 @@
 import { unstable_cacheLife as cacheLife } from 'next/cache';
+import { Suspense } from 'react';
 
 async function getProfile(region: string, riotid: string) {
   'use cache';
@@ -75,7 +76,9 @@ export default async function Profile({
       <h1>
         {profile.account.game_name}#{profile.account.tag_line}
       </h1>
-      <MatchList region={region} riotid={riotid} />
+      <Suspense fallback={<div>Loading Matchlist...</div>}>
+        <MatchList region={region} riotid={riotid} />
+      </Suspense>
     </div>
   );
 }
