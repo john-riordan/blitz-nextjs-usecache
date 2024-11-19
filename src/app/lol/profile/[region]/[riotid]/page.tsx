@@ -1,5 +1,4 @@
 import { unstable_cacheLife as cacheLife } from 'next/cache';
-import { Suspense } from 'react';
 
 async function getProfile(region: string, riotid: string) {
   'use cache';
@@ -27,6 +26,9 @@ async function getMatchList(region: string, riotid: string) {
 }
 
 async function getMatch(matchid: string) {
+  'use cache';
+  cacheLife('max');
+
   const response = await fetch(
     `https://league-v2.iesdev.com/lol/match/${matchid}`
   );
@@ -36,7 +38,11 @@ async function getMatch(matchid: string) {
 
 async function Match({ matchid }: { matchid: string }) {
   const match = await getMatch(matchid);
-  return <div>Duration: {match.info.gameDuration}</div>;
+  return (
+    <div>
+      Id: {match.info.gameId} Duration: {match.info.gameDuration}
+    </div>
+  );
 }
 
 async function MatchList({
@@ -50,9 +56,7 @@ async function MatchList({
   return (
     <div>
       {matchList.slice(0, 10).map((matchid: string) => (
-        <Suspense key={matchid} fallback={<div>Loading Match...</div>}>
-          <Match matchid={matchid} />
-        </Suspense>
+        <Match key={matchid} matchid={matchid} />
       ))}
     </div>
   );
@@ -71,9 +75,7 @@ export default async function Profile({
       <h1>
         {profile.account.game_name}#{profile.account.tag_line}
       </h1>
-      <Suspense fallback={<div>Loading Matchlist...</div>}>
-        <MatchList region={region} riotid={riotid} />
-      </Suspense>
+      <MatchList region={region} riotid={riotid} />
     </div>
   );
 }
