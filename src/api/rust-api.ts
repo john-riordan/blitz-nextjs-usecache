@@ -1,5 +1,9 @@
 import { unstable_cacheLife as cacheLife } from "next/cache";
 
+// function wait(ms: number) {
+//   return new Promise((resolve) => setTimeout(resolve, ms));
+// }
+
 export async function getProfile(region: string, riotid: string = "") {
   "use cache";
   cacheLife("days");
@@ -17,8 +21,10 @@ export async function getProfile(region: string, riotid: string = "") {
 }
 
 export async function getMatchList(region: string, riotid: string) {
-  "use cache";
-  cacheLife("minutes");
+  // Intentionally commenting out to show how caching works
+  // "use cache";
+  // cacheLife("minutes");
+  // await new Promise((resolve) => setTimeout(resolve, 5000));
 
   const [gameName, tagline] = riotid.split("-");
 
